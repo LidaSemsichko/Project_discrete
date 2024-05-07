@@ -22,41 +22,42 @@ def find_next_empty_space(field):
 
 def valid_move(field, row, col, num):
     '''function for validating the next move'''
-    for x in range(9):
+    for x in range(9):            # checking all the rows for the same number
         if field[row][x] == num:
             return False
 
-    for x in range(9):
+    for x in range(9):            # checking all the columns for the same number
         if field[x][col] == num:
             return False
 
     start_row = row - row % 3
     start_col = col - col % 3
-    for i in range(3):
+    for i in range(3):            # checking the 3 by 3 box for the same number
         for j in range(3):
             if field[i + start_row][j + start_col] == num:
                 return False
-    return True
+    return True                   # if there are no same numbers, the move is valid
 
 def solve(field):
     '''function for solving the sudoku puzzle'''
     if (coords := find_next_empty_space(field)) is None:
-        return True
+        return True               # if there are no empty spaces anymore, sudoku is solved
 
     row, col = coords
 
-    if field[row][col] > 0:
+    if field[row][col] > 0:       # if given space is already occupied, move on using recursion
         return solve(field)
 
-    for num in range(1, 10):
+    for num in range(1, 10):      # try all the numbers for the given space
 
         # possible = []
 
         if valid_move(field, row, col, num):
-            field[row][col] = num
-            if solve(field):
+            field[row][col] = num    # if the move is valid, we try to solve the sudoku with it
+            if solve(field):         # if we find solution, return True for solved sudoku
                 return True
-            field[row][col] = 0
+            field[row][col] = 0      # if its unsolvable with this move
+                                     # reverse it and try a different one (backtracking)
 
             # possible.append(num)
     # if len(possible) == 1:
@@ -66,7 +67,7 @@ def solve(field):
     #         return solve(field, row, col+1)
     #     return solve(field, row+1, 0)
 
-    return False
+    return False                 # if no numbers are suitable, return False for unsolvable puzzle
 
 grid = [[3, 0, 6, 5, 0, 8, 4, 0, 0],
         [5, 2, 0, 0, 0, 0, 0, 0, 0],
